@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Ansible <3 Windows</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+setTimeout(function(){
+  $( "#ansible_logo" ).css('visibility','visible').animate({opacity: 1.0}, 1000);
+}, 2000);
+setTimeout(function(){
+  $( "#heart" ).css('visibility','visible').animate({opacity: 1.0}, 1000);
+}, 4000);
+setTimeout(function(){
+  $("#windows_logo").css('visibility','visible').animate({opacity: 1.0}, 1000);
+}, 6000);
+</script>
+<style>
+#flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 60%;
+  border: 0;
+  margin: 0 auto;
+  align:middle;
+}
+#ansible_logo {
+  visibility: hidden;
+  opacity: 0.0;  
+}
+#heart {
+  text-align: center;
+  padding: 125px;
+  visibility: hidden;
+  opacity: 0.0;
+}
+#windows_logo {
+  visibility: hidden;
+  opacity: 0.0;
+}
+</style>
+</head>
+<body>
+<div id="flex-container">
+  <div id="ansible_logo">
+    <a title="By Ansible.com [Public domain], via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File%3AAnsible_logo.svg"><img width="256" alt="Ansible logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Ansible_logo.svg/256px-Ansible_logo.svg.png"/></a>
+  </div>
+  <div id="heart">
+    <font size=150>&hearts;</font>
+  </div>
+  <div id="windows_logo">
+    <a title="By Original work: Microsoft File:Windows 8 logo and wordmark.svg: Multiple editors; see image description page This work: Fry1989 [Public domain], via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File%3AWindows_logo_-_2012.svg"><img width="256" alt="Windows logo - 2012" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/256px-Windows_logo_-_2012.svg.png"/></a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+- import_tasks: enable_iis.yml
+- import_tasks: copy_index_to_server.yml
+- shell: open http://{{ inventory_hostname }}
+  delegate_to: localhost

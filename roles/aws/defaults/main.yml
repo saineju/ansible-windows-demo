@@ -1,0 +1,24 @@
+## Region variables
+region: "eu-central-1"
+vpc_subnet: 10.0.0.0/16
+vpc_name: "WinRM demo VPC"
+
+## Subnet variables
+pub_subnet_1: 10.0.1.0/24
+pub_subnet_1_az: "{{ region }}c"
+
+## Ami variables
+ami_name: "Windows_Server-2016-English-Full-Base*"
+searched_ami_tags: {}
+
+## My IP lookup
+MyIP: "{{ lookup('url','https://api.ipify.org/') }}/32"
+
+## Instane variables
+instance_name: "WinRM demo Windows Instance"
+key_name: winrm-demo
+key_path: "{{ ca_path }}/winrm-demo.key"
+
+## Stack variables
+network_stack_name: "network-stack"
+instance_stack: "instance-stack"

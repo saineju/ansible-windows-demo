@@ -1,0 +1,7 @@
+client_cert_common_name: winrm-admin
+client_cert_country: FI
+client_cert_state: Helsinki
+client_cert_locality: Helsinki
+client_cert_organization: "WinRM demo"
+client_cert_ou: "WinRM demo"
+winrm_user_password: "{{ lookup('password','ca/winrm-admin-pwd.txt') }}"

@@ -1,0 +1,8 @@
+- import_tasks: create_ssh_key.yml
+- import_tasks: get_ami.yml
+- import_tasks: network.yml
+- import_tasks: instance.yml
+- import_tasks: wait_for_instance.yml
+- import_tasks: get_ec2_details.yml
+- import_tasks: get_password.yml
+- import_tasks: add_instance_to_group.yml

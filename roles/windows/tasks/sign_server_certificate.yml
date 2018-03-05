@@ -1,0 +1,13 @@
+- name: Add nodename as alternative name for cert
+  lineinfile:
+    dest: "{{ ca_path }}/intermediate/openssl.cnf"
+    regexp: "^DNS.1 ="
+    line: "DNS.1 = {{ inventory_hostname }}"
+    state: present
+  delegate_to: localhost
+  
+- name: Sign cert with own CA
+  shell: openssl ca -config intermediate/openssl.cnf -passin pass:{{ intermediate_ca_password }} -extensions server_cert -batch -days 3650 -out {{ ca_path }}/intermediate/certs/{{ inventory_hostname }}.crt -in reqs/{{ inventory_hostname }}.csr
+  args:
+    chdir: "{{ ca_path }}"
+  delegate_to: localhost

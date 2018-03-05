@@ -1,0 +1,10 @@
+- name: Get details for ec2 instance
+  ec2_instance_facts:
+    region: "{{ region }}"
+    instance_ids:
+      - "{{ instance_id }}"
+  register: searched_instance
+
+- name: Set public DNS to variable
+  set_fact:
+    instance_dns_name: "{{ searched_instance.instances[0].public_dns_name }}"

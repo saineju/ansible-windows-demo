@@ -1,0 +1,5 @@
+<powershell>
+Enable-PSRemoting -Force
+netsh advfirewall firewall add rule name="Windows Remote Management (HTTP-In)" dir=in action=allow protocol=TCP localport=5985 remoteip={{ MyIP }}
+netsh advfirewall firewall add rule name="Windows Remote Management (HTTPS-In)" dir=in action=allow protocol=TCP localport=5986 remoteip={{ MyIP }}
+</powershell>

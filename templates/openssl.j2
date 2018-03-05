@@ -1,0 +1,121 @@
+## Reference: https://jamielinux.com/docs/openssl-certificate-authority/create-the-root-pair.html
+
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+{% if cert_type == 'intermediate' %}
+copy_extensionss  = copy
+dir               = {{ playbook_dir }}/ca/{{ cert_type }}
+{% else %}
+dir               = {{ playbook_dir }}/ca
+{% endif %}
+certs             = $dir/certs
+crl_dir           = $dir/crl
+new_certs_dir     = $dir/newcerts
+database          = $dir/index.txt
+serial            = $dir/serial
+RANDFILE          = $dir/private/.rand
+
+private_key       = $dir/private/{{ cert_type }}.ca.key.pem
+certificate       = $dir/certs/{{ cert_type }}.ca.cert.pem
+
+crlnumber         = $dir/crlnumber
+crl               = $dir/crl/{{ cert_type }}.ca.crl.pem
+crl_extensions    = crl_ext
+default_crl_days  = 30
+
+default_md        = sha256
+
+name_opt          = ca_default
+cert_opt          = ca_default
+default_days      = 365
+preserve          = no
+{% if cert_type == 'root' %}
+policy            = policy_strict
+{% else %}
+policy		  = policy_loose
+{% endif %}
+
+[ v3_intermediate_ca ]
+# Extensions for a typical intermediate CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+{% if cert_type == 'intermediate' %}
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = example.com
+{% endif %}
+
+[ policy_strict ]
+countryName             = match
+stateOrProvinceName     = match
+organizationName        = match
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ policy_loose ]
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ req ]
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+
+default_md          = sha256
+
+x509_extensions     = v3_ca
+
+[ req_distinguished_name ]
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name
+localityName                    = Locality Name
+0.organizationName              = Organization Name
+organizationalUnitName          = Organizational Unit Name
+commonName                      = Common Name
+emailAddress                    = Email Address
+
+countryName_default             = FI
+stateOrProvinceName_default     = Helsinki
+localityName_default            =
+0.organizationName_default      = WinRM demo
+
+[ v3_ca ]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+
+[ usr_cert ]
+basicConstraints = CA:FALSE
+nsCertType = client, email
+nsComment = "OpenSSL Generated Client Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth, emailProtection
+
+[ server_cert ]
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "OpenSSL Generated Server Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+{% if cert_type == 'intermediate' %}
+subjectAltName = @alt_names
+{% endif %}
+
+[ crl_ext ]
+authorityKeyIdentifier=keyid:always

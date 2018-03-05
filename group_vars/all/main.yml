@@ -1,0 +1,2 @@
+ca_path: "{{ playbook_dir }}/ca"
+intermediate_ca_password: "{{ lookup('password','ca/intermediate-pwd.txt') }}"

@@ -1,0 +1,9 @@
+- name: Set instance DNS name to hostgroup
+  add_host:
+    hostname: "{{ instance_dns_name }}"
+    ansible_user: Administrator
+    ansible_password: "{{ win_password.win_password }}"
+    ansible_port: 5985
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm    
+    groupname: windows

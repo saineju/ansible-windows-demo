@@ -1,0 +1,15 @@
+- name: Copy Root CA certificate to server
+  win_copy:
+    src: "{{ ca_path }}/certs/root.ca.cert.pem"
+    dest: c:\Users\Administrator\root-ca.crt
+
+- name: Copy intermediate CA certificate to server
+  win_copy:
+    src: "{{ ca_path }}/intermediate/certs/intermediate.ca.cert.pem"
+    dest: c:\Users\Administrator\intermediate-ca.crt
+
+- name: Add Root CA to root store
+  win_command: certutil -addstore "Root" c:\Users\Administrator\root-ca.crt
+
+- name: Add intermediate CA to CA store
+  win_command: certutil -addstore "CA" c:\Users\Administrator\intermediate-ca.crt

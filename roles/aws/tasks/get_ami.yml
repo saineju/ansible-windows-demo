@@ -1,0 +1,14 @@
+- name:                Get ami image details
+  ec2_ami_find:
+    name: "{{ ami_name }}"
+    region: "{{ region }}"
+    ami_tags: "{{ searched_ami_tags }}"
+    sort: name
+    sort_order: descending
+    sort_end: 1
+  register: existing_ami
+
+- name:                Set AMI ID to variable
+  set_fact:
+    ami_id: "{{ existing_ami.results[0].ami_id }}"
+  when: existing_ami.results.0 is defined

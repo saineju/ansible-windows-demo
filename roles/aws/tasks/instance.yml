@@ -1,0 +1,23 @@
+- name: create instance
+  cloudformation:
+    stack_name: "{{ instance_stack }}"
+    state: "{{ state|default('present') }}"
+    region: "{{ region }}"
+    disable_rollback: false
+    template: "{{ playbook_dir }}/files/instance.yml"
+    template_parameters:
+      VpcId: "{{ network_stack_name }}-VPC"
+      VpcSubnet: "{{ vpc_subnet }}"
+      MyIP: "{{ MyIP }}"
+      MyKeyName: "{{ key_name }}"
+      MyInstanceName: "{{ instance_name }}"
+      MyImageId: "{{ ami_id }}"
+      PubSubnet1Id: "{{ network_stack_name }}-PubSub1"
+      MyMetadata: "{{ lookup('template','user-data.j2')|b64encode }}"
+    tags:
+      Stack: "{{ instance_stack }}"
+  register: instance_stack_details
+
+- name: Get instance ID from stack details
+  set_fact:
+    instance_id: "{{ instance_stack_details.stack_outputs.MyInstance }}"

@@ -1,0 +1,7 @@
+- name: copy winrm-admin certificate to server
+  win_copy:
+    src: "{{ ca_path }}/intermediate/certs/winrm-admin.crt"
+    dest: c:\Users\Administrator\winrm-admin.crt
+
+- name: add client certificate to certificate store on server
+  win_command: certutil -addstore "My" c:\Users\Administrator\winrm-admin.crt

@@ -1,0 +1,13 @@
+- name: Copy certificate request template to server
+  win_template:
+    src: cert_req.j2
+    dest: c:\Users\Administrator\cert_req.txt
+
+- name: Create certificate request
+  win_command: certreq -f -new c:\Users\Administrator\cert_req.txt c:\Users\Administrator\cert_req.csr
+
+- name: Get certificate request file
+  fetch:
+    src: c:\Users\Administrator\cert_req.csr
+    dest: "{{ ca_path }}/reqs/{{ ansible_host }}.csr"
+    flat: true

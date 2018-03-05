@@ -1,0 +1,4 @@
+- name: Copy index.html to server
+  win_copy:
+    src: index.html
+    dest: c:\Inetpub\wwwroot\index.html

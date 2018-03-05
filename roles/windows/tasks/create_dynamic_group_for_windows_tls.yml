@@ -1,0 +1,11 @@
+- name: Set instance DNS name to another hostgroup to use TLS connection
+  add_host:
+    hostname: "{{ ansible_host }}"
+    ansible_user: winrm-admin
+    ansible_port: 5986
+    ansible_connection: winrm
+    ansible_winrm_transport: certificate
+    ansible_winrm_cert_pem: "{{ ca_path }}/intermediate/certs/winrm-admin.crt"
+    ansible_winrm_cert_key_pem: "{{ ca_path }}/intermediate/private/winrm-admin.key"
+    ansible_winrm_ca_trust_path: "{{ ca_path }}/certs/root.ca.cert.pem"
+    groupname: windows-tls

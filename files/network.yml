@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation for Network.
+Parameters:
+  VpcSubnet:
+    Description: Network CIDR
+    Type: String
+    Default: ''
+  VpcName:
+    Description: VPC Name
+    Type: String
+    Default: ''
+  DnsDomainName:
+    Description: DHCP server domain name
+    Type: String
+    Default: ''
+  PubSubNet1:
+    Description: Public subnet 1
+    Type: String
+    Default: ''   
+  PubSubNet1Az:
+    Description: Public subnet 1 availability zone
+    Type: String
+    Default: ''   
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock:
+        Ref: VpcSubnet
+      InstanceTenancy: default
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+      - Key: Name
+        Value: 
+          Ref: VpcName
+  PubSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 
+        Ref: PubSubNet1
+      AvailabilityZone:
+        Ref: PubSubNet1Az
+      VpcId:
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: Public subnet 1
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties: {}
+  DhcpOptions:
+    Type: AWS::EC2::DHCPOptions
+    Properties:
+      DomainName:
+        Ref: DnsDomainName
+      DomainNameServers:
+      - AmazonProvidedDNS
+      Tags:
+      - Key: Name
+        Value: Internetgateway
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: Route for public subnets
+  PublicRoute:
+     Type: AWS::EC2::Route
+     Properties:
+       DestinationCidrBlock: 0.0.0.0/0
+       RouteTableId:
+         Ref: PublicRouteTable
+       GatewayId:
+         Ref: InternetGateway
+     DependsOn: PublicGateway
+  SubnetRoute1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      SubnetId: 
+        Ref: PubSubnet1
+  PublicGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+  PublicDhcpAssociation:
+    Type: AWS::EC2::VPCDHCPOptionsAssociation
+    Properties:
+      VpcId:
+        Ref: VPC
+      DhcpOptionsId:
+        Ref: DhcpOptions
+Outputs:
+  VpcId:
+    Value:
+      Ref: VPC
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-VPC"
+  PubSubnet1Id:
+    Value:
+      Ref: PubSubnet1
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-PubSub1"
+  

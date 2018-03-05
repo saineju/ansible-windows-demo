@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation for EC2 Security Groups.
+Parameters:
+  VpcId:
+    Type: String
+    Description: VPC id
+  VpcSubnet:
+    Description: Network CIDR
+    Type: String
+    Default: ''
+  MyIP:
+    Description: My IP
+    Type: String
+    Default: ''
+  MyInstanceName:
+    Description: My Instance name
+    Type: String
+    Default: ''
+  MyImageId:
+    Description: My image ID
+    Type: String
+    Default: ''
+  MyKeyName:
+    Description: My Key name
+    Type: String
+    Default: ''
+  PubSubnet1Id:
+    Description: My subnet id
+    Type: String
+    Default: ''
+  MyMetadata:
+    Description: My Metadata
+    Type: String
+    Default: ''
+Resources:
+  WinACL:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Windows ACL
+      VpcId:
+        Fn::ImportValue:
+          Ref: VpcId
+      # HTTP is allowed from anywhere    
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      # HTTPS is allowed from anywhere   
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      # WinRM is open from my IP
+      - IpProtocol: tcp
+        FromPort: 5985
+        ToPort: 5985
+        CidrIp: 
+          Ref: MyIP
+      # WinRM TLS is open from my IP
+      - IpProtocol: tcp
+        FromPort: 5986
+        ToPort: 5986
+        CidrIp: 
+          Ref: MyIP
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: 
+          Ref: MyIP
+      Tags:
+      - Key: Name
+        Value: WinACL
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId:
+        Ref: MyImageId
+      KeyName: 
+        Ref: MyKeyName
+      InstanceType: "t2.micro"
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet: 
+            - Ref: "WinACL"
+          SubnetId:
+            Fn::ImportValue:
+              Ref: PubSubnet1Id
+      UserData: 
+        Ref: MyMetadata
+      BlockDeviceMappings:
+       -
+          DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 30
+Outputs:
+  WinACL:
+    Value:
+      Ref: WinACL
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-WinACL"
+  MyInstance:
+    Value:
+      Ref: MyInstance
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-MyInstance"

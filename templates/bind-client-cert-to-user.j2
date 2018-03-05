@@ -1,0 +1,8 @@
+$PlaintextPassword='{{ winrm_user_password }}'
+$CAThumbPrint='{{ CAThumbPrint.stdout }}'
+## Create secure string of your password
+$userpass=ConvertTo-SecureString $PlaintextPassword -asplaintext -force
+## Create user object
+$adminuser = New-Object System.Management.Automation.PSCredential winrm-admin,$userpass
+## Bind client certificate to user
+New-item -Path WSMan:\localhost\clientCertificate -URI * -Subject * -Issuer $CAThumbPrint -Credential $adminuser -Force

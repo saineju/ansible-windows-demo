@@ -1,0 +1,4 @@
+- import_playbook: create_ca.yml
+- import_playbook: setup_environment.yml
+- import_playbook: windows.yml
+- import_playbook: windows-tls.yml

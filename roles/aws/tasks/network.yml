@@ -1,0 +1,17 @@
+- name:               Network template
+  cloudformation:
+    stack_name: "{{ network_stack_name }}"
+    state: "{{ state|default('present') }}"
+    region: "{{ region }}"
+    disable_rollback: false
+    template: "{{ playbook_dir }}/files/network.yml"
+    template_parameters:
+      VpcSubnet: "{{ vpc_subnet }}"
+      VpcName: "{{ vpc_name }}"
+      DnsDomainName: "{{ region }}.compute.internal"
+      PubSubNet1: "{{ pub_subnet_1 }}"
+      PubSubNet1Az: "{{ pub_subnet_1_az }}"
+    tags:
+      Stack: "Network"
+      Name: "{{ network_stack_name }}"
+

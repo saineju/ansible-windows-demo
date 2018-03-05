@@ -1,0 +1,13 @@
+- name: Get certificate thumbprint
+  win_shell: "Get-ChildItem -Path cert:\\LocalMachine\\My|ForEach-Object -Process {if($_.FriendlyName -eq 'Certificate for WinRM {{ ansible_date_time.epoch }}'){$_.Thumbprint}}"
+  register: thumbprint
+
+- name: Remove HTTPS listener if one exists
+  win_shell: winrm delete winrm/config/Listener?Address=*+Transport=HTTPS
+  ignore_errors: true
+
+- name: Enable TLS for WinRM
+  win_shell: "New-Item WSMan:\\localhost\\listener -Address * -Transport HTTPS -CertificateThumbprint {{ thumbprint.stdout_lines[0] }} -Force"
+
+- name: Enable Certificate authentication with WinRM
+  win_shell: winrm set winrm/config/Service/Auth '@{Certificate = "true"}'

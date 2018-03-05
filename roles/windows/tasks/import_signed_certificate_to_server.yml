@@ -1,0 +1,7 @@
+- name: copy signed certificate to server
+  win_copy:
+    src: "{{ ca_path }}/intermediate/certs/{{ inventory_hostname }}.crt"
+    dest: c:\Users\Administrator\cert.crt
+
+- name: Install cert to server
+  win_command: "certreq -f -q -accept -machine c:\\Users\\Administrator\\cert.crt"

@@ -1,0 +1,32 @@
+[Version]
+Signature="$Windows NT$"
+
+[NewRequest]
+; For empty subject, this line can be left empty 'Subject='
+; Subject is not mandatory if certificate has SAN
+Subject="CN={{ ansible_host }}" 
+; should the key be exportable or not
+Exportable=TRUE 
+; key length, 2048 should be minimum
+KeyLength=2048
+; Key exchange, required for encryption
+KeySpec=1
+; Key usage, 0xA0 = Digital Signature, Key Encipherment
+KeyUsage=0xA0
+; Hash algorithm, use SHA256 instead of SHA1
+HashAlgorithm=SHA256
+; Should key be stored to LocalStorage instead of current user store
+MachineKeySet=TRUE
+RequestType = PKCS10
+ProviderName = "Microsoft Strong Cryptographic Provider"
+; Friendly name for the certificate to make it easier to find
+FriendlyName = "Certificate for WinRM {{ ansible_date_time.epoch }}"
+[EnhancedKeyUsageExtension]
+; Key usage extension, Server Authentication
+OID=1.3.6.1.5.5.7.3.1
+
+[Extensions]
+; Add Subject Alternative name (SAN) to the certificate
+2.5.29.17 = "{text}"
+_continue_ = "dns={{ ansible_host }}&"
+

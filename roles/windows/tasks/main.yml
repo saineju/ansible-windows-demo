@@ -1,0 +1,10 @@
+- import_tasks: add_ca_certificates_to_server.yml
+- import_tasks: create_server_cert_req.yml
+- import_tasks: revoke_servercert_if_one_exists.yml
+- import_tasks: sign_server_certificate.yml
+- import_tasks: import_signed_certificate_to_server.yml
+- import_tasks: enable_winrm_tls.yml
+- import_tasks: create_client_cert.yml
+- import_tasks: add_client_certificate_to_server.yml
+- import_tasks: create_winrm_admin_user.yml
+- import_tasks: create_dynamic_group_for_windows_tls.yml

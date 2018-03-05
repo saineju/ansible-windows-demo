@@ -1,0 +1,36 @@
+- name: check if client certificate already exists
+  stat:
+    path: "{{ ca_path }}/intermediate/certs/winrm-admin.crt"
+  register: client_cert_file_exists
+  delegate_to: localhost
+
+- name: create client certificate key
+  openssl_privatekey:
+    path: "{{ ca_path }}/intermediate/private/winrm-admin.key"
+    size: 2048
+  delegate_to: localhost
+   
+- name: create client certificate request
+  openssl_csr:
+    path: "{{ ca_path }}/reqs/winrm-admin.csr"
+    digest: sha256
+    privatekey_path: "{{ ca_path }}/intermediate/private/winrm-admin.key"
+    common_name: "{{ client_cert_common_name }}"
+    country_name: "{{ client_cert_country }}"
+    organization_name: "{{ client_cert_organization }}"
+    state_or_province_name: "{{ client_cert_state }}"
+    organizational_unit_name: "{{ client_cert_ou }}"
+    locality_name: "{{ client_cert_locality }}"
+    key_usage:
+      - digitalSignature
+      - keyAgreement
+    extended_key_usage:
+      - clientAuth
+  delegate_to: localhost
+    
+- name: sign client certificate request
+  shell: openssl ca -config intermediate/openssl.cnf -passin pass:{{ intermediate_ca_password }} -extensions usr_cert -batch -days 3650 -out {{ ca_path }}/intermediate/certs/winrm-admin.crt -in {{ ca_path }}/reqs/winrm-admin.csr
+  args:
+    chdir: "{{ ca_path }}"
+  delegate_to: localhost
+  when: client_cert_file_exists.stat.exists is defined and not client_cert_file_exists.stat.exists

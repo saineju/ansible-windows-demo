@@ -1,0 +1,12 @@
+- name: check if certificate file exists
+  stat:
+    path: "{{ ca_path }}/intermediate/certs/{{ inventory_hostname }}.crt"
+  register: cert_file_exists
+  delegate_to: localhost
+
+- name: revoke certificate if already exists
+  shell: openssl ca -config intermediate/openssl.cnf -passin pass:{{ intermediate_ca_password }} -revoke {{ ca_path }}/intermediate/certs/{{ inventory_hostname }}.crt
+  args:
+    chdir: "{{ ca_path }}"
+  when: cert_file_exists.stat.exists is defined and cert_file_exists.stat.exists
+  delegate_to: localhost

@@ -1,0 +1,13 @@
+- name: Create winrm-demo SSH-key pair
+  ec2_key:
+    region: "{{ region }}"
+    name: "{{ key_name }}"
+  register: private_key
+
+- name: write private key contents to disk
+  copy:
+    content: |
+      {{ private_key.key.private_key }}
+    dest: "{{ key_path }}"
+    mode: 0600
+  when: private_key.key.private_key is defined

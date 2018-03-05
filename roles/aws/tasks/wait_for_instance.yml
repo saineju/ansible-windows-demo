@@ -1,0 +1,2 @@
+- name:               Wait for instance status to change to running
+  shell: aws ec2 wait instance-status-ok --instance-ids "{{ instance_id }}" --region "{{ region }}"

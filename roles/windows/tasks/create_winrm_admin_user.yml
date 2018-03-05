@@ -1,0 +1,29 @@
+- name: get intermediate CA thumbprint
+  shell: openssl x509 -in intermediate/certs/intermediate.ca.cert.pem -sha1 -noout -fingerprint|awk -F "=" {'print $2'}|tr -d ':'
+  args: 
+    chdir: "{{ ca_path }}"
+  register: CAThumbPrint
+  delegate_to: localhost
+
+- name: Create user winrm-admin
+  win_user:
+    name: winrm-admin
+    groups: Administrators
+    password: "{{ winrm_user_password }}"
+    password_never_expires: no
+    state: present
+    
+- name: Create script for binding certificate to user
+  template:
+    src: bind-client-cert-to-user.j2
+    dest: tmp/bind-client-cert-to-user.ps1
+  delegate_to: localhost
+
+- name: Run script for binding certificate to user on server
+  script: tmp/bind-client-cert-to-user.ps1
+
+- name: Remove compiled script from machine
+  file:
+    path: tmp/bind-client-cert-to-user.ps1
+    state: absent 
+  delegate_to: localhost

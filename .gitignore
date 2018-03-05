@@ -1,0 +1,7 @@
+test*
+virtualenv
+ca
+tmp/*
+host_vars/localhost
+*-pwd.txt
+*.retry
