@@ -68,3 +68,6 @@ WinRM HTTP and NTLM password authentication as Administrator.
 * Ansible Windows modules: http://docs.ansible.com/ansible/latest/list_of_windows_modules.html
 * OpenSSL certificate authority: https://jamielinux.com/docs/openssl-certificate-authority/introduction.html
 * Powershell Remoting security considerations: https://docs.microsoft.com/en-us/powershell/scripting/setup/winrmsecurity?view=powershell-6
+
+* License
+You may freely clone and use this code as you wish, but please note that the code is provided "as is" without warranty of any kind.
