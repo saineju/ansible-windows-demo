@@ -19,9 +19,9 @@ Before using one is expected to have
   * https://docs.aws.amazon.com/rekognition/latest/dg/setup-awscli.html
 
 # How to use
-1. Prepare environment:
+1. Prepare environment: 
     ```bash setup_local_env.sh```
-2. Run master playbook
+2. Run master playbook: 
     ```AWS_PROFILE=<your profile name> ansible-playbook -i inventories/demo.yml site.yml```
 
 # What does it do exactly?
@@ -62,3 +62,9 @@ WinRM HTTP and NTLM password authentication as Administrator.
 ## Finalizing installation
 1. IIS server is installed
 2. A custom index.html is copied to the server
+
+# Further readings / references
+* Ansible Windows support documentation: http://docs.ansible.com/ansible/latest/intro_windows.html
+* Ansible Windows modules: http://docs.ansible.com/ansible/latest/list_of_windows_modules.html
+* OpenSSL certificate authority: https://jamielinux.com/docs/openssl-certificate-authority/introduction.html
+* Powershell Remoting security considerations: https://docs.microsoft.com/en-us/powershell/scripting/setup/winrmsecurity?view=powershell-6
