@@ -1,5 +1,0 @@
-- hosts: all
-  
-  tasks:
-  - set_fact:
-      ansible_python_interpreter: "{{ lookup('pipe','which python') }}"

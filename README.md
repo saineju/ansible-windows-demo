@@ -20,9 +20,9 @@ Before using one is expected to have
 
 # How to use
 1. Prepare environment:
-    bash setup_local_env.sh
+    ```bash setup_local_env.sh```
 2. Run master playbook
-    AWS_PROFILE=<your profile name> ansible-playbook -i inventories/demo.yml site.yml
+    ```AWS_PROFILE=<your profile name> ansible-playbook -i inventories/demo.yml site.yml```
 
 # What does it do exactly?
 The first step will prepare your local environment, so it will create virtualenv and installs there required plugins (see files/requirements.txt for list).
