@@ -64,10 +64,11 @@ WinRM HTTP and NTLM password authentication as Administrator.
 2. A custom index.html is copied to the server
 
 # Further readings / references
-* Ansible Windows support documentation: http://docs.ansible.com/ansible/latest/intro_windows.html
-* Ansible Windows modules: http://docs.ansible.com/ansible/latest/list_of_windows_modules.html
+* Ansible Windows support documentation: https://docs.ansible.com/ansible/latest/user_guide/windows.html#windows
+* Ansible Windows modules: https://docs.ansible.com/ansible/2.9/modules/list_of_windows_modules.html
 * OpenSSL certificate authority: https://jamielinux.com/docs/openssl-certificate-authority/introduction.html
-* Powershell Remoting security considerations: https://docs.microsoft.com/en-us/powershell/scripting/setup/winrmsecurity?view=powershell-6
+* Powershell Remoting security considerations: https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/winrmsecurity?view=powershell-7.2
+* OpenSSH windows: https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_server_configuration
 
 # License
 You may freely clone and use this code as you wish, but please note that the code is provided "as is" without warranty of any kind.
