@@ -1,0 +1,97 @@
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+  - ca_dirs:
+    - "{{ playbook_dir }}/ca"
+    - "{{ playbook_dir }}/ca/private"
+    - "{{ playbook_dir }}/ca/certs"
+    - "{{ playbook_dir }}/ca/newcerts"
+    - "{{ playbook_dir }}/ca/crl"
+    - "{{ playbook_dir }}/ca/reqs"
+    - "{{ playbook_dir }}/ca/intermediate/private"
+    - "{{ playbook_dir }}/ca/intermediate/certs"
+    - "{{ playbook_dir }}/ca/intermediate/newcerts"
+    - "{{ playbook_dir }}/ca/intermediate/crl"
+    
+  tasks:
+  - name: Create directories for CA
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0700
+    with_items: "{{ ca_dirs }}"
+
+  - name: Create index file for Root CA
+    file:
+      path: "{{ playbook_dir }}/ca/index.txt"
+      state: touch
+      mode: 0700
+
+  - name: Create index file for Intermediate CA
+    file:
+      path: "{{ playbook_dir }}/ca/intermediate/index.txt"
+      state: touch
+      mode: 0700
+  
+  - name: Initialize Root serial file
+    lineinfile:
+      path: "{{ playbook_dir }}/ca/serial"
+      regexp: "^1"
+      line: 1000
+      state: present
+      create: true
+      mode: 0700
+
+  - name: Initialize Intermediate serial file
+    lineinfile:
+      path: "{{ playbook_dir }}/ca/intermediate/serial"
+      regexp: "^1"
+      line: 1000
+      state: present
+      create: true
+      mode: 0700
+
+  - name: set cert_type to root
+    set_fact:
+      cert_type: root
+
+  - name: create root config
+    template:
+      src: templates/openssl.j2
+      dest: "{{ playbook_dir }}/ca/openssl.cnf"
+
+  - name: create root key
+    shell: openssl genrsa -aes256 -passout pass:{{ lookup('password','ca/root-pwd.txt') }} -out ./private/{{ cert_type }}.ca.key.pem 4096
+    args:
+      chdir: "{{ playbook_dir }}/ca"
+
+  - name: generate root certificate
+    shell: openssl req -config openssl.cnf -key ./private/{{ cert_type }}.ca.key.pem -passin file:root-pwd.txt -new -x509 -days 3650 -sha256 -extensions v3_ca -out certs/{{ cert_type }}.ca.cert.pem -subj "/C=FI/ST=Helsinki/L=Helsinki/O=WinRM demo/OU=WinRM demo/CN=WinRM Root CA"
+    args:
+      chdir: "{{ playbook_dir }}/ca"
+
+  - name: set cert_type to intermediate
+    set_fact:
+      cert_type: intermediate
+
+  - name: create intermediate config
+    template:
+      src: templates/openssl.j2
+      dest: "{{ playbook_dir }}/ca/intermediate/openssl.cnf"
+
+  - name: create intermediate key
+    shell: openssl genrsa -aes256 -passout pass:{{ lookup('password','ca/intermediate-pwd.txt') }} -out ./intermediate/private/{{ cert_type }}.ca.key.pem 4096
+    args:
+      chdir: "{{ playbook_dir }}/ca"
+
+  - name: create intermediate request
+    shell: openssl req -config intermediate/openssl.cnf -new -sha256 -key intermediate/private/intermediate.ca.key.pem -passin file:intermediate-pwd.txt -out reqs/intermediate.csr.pem -subj "/C=FI/ST=Helsinki/L=Helsinki/O=WinRM demo/OU=WinRM demo/CN=WinRM Intermediate CA"
+    args:
+      chdir: "{{ playbook_dir }}/ca"
+
+  - name: Sign intermediate CA
+    shell: openssl ca -config openssl.cnf -extensions v3_intermediate_ca -passin file:root-pwd.txt -batch -days 3650 -notext -md sha256 -in reqs/intermediate.csr.pem -out intermediate/certs/{{ cert_type }}.ca.cert.pem
+    args:
+      chdir: "{{ playbook_dir }}/ca"
